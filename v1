@@ -1,0 +1,125 @@
+#include <stdio.h>
+#define MAX_LENGTH 6
+#define TOTAL_GAMES 182
+#define NUMBER_OF_TEAMS 14
+
+typedef struct 
+{
+    char *weekday[MAX_LENGTH];
+    int *date[MAX_LENGTH];
+    int *month[MAX_LENGTH];
+    int *time_hour[MAX_LENGTH];
+    int *time_minutes[MAX_LENGTH];
+    char *team1[MAX_LENGTH];
+    char *team2[MAX_LENGTH];
+    int result1;
+    int result2;
+    int viewers; 
+} kampe;
+
+typedef struct
+{
+    char* team_name[MAX_LENGTH];
+    int goals_scored_of_team;
+    int goals_scored_against_team;
+} team;
+
+int h(char *name);
+
+int main(void)
+{    
+ int scanres = 0;
+ int index = 0;
+kampe game[TOTAL_GAMES];
+team team[NUMBER_OF_TEAMS];
+
+int i = 0;
+
+ FILE *input;
+input = fopen("kampe.txt", "r");
+if (input != NULL)
+  {
+    for (i = 0; i < TOTAL_GAMES; i++)
+      {   
+        scanres = fscanf(input, " %s %d/%d %d.%d %s - %s %d - %d %d",
+        game[i].weekday, &game[i].date, &game[i].month, &game[i].time_hour, &game[i].time_minutes, game[i].team1, game[i].team2, &game[i].result1, &game[i].result2, &game[i].viewers);
+    
+        printf("%s %d/%d %d.%d %s - %s %d - %d %d \n", 
+        game[i].weekday, game[i].date, game[i].month, game[i].time_hour, game[i].time_minutes, game[i].team1, game[i].team2, game[i].result1, game[i].result2, game[i].viewers);
+      }
+  }
+else
+  {
+    printf("failed!");
+  }
+
+/*
+for (i = 0; i < NUMBER_OF_TEAMS; i++)
+  {
+    index = h(game[i].team1); /* HVOR SKAL INTEN ENDE HENNE?
+    
+    printf("index: %d\n");
+  }
+*/
+return 0;
+}
+
+
+int h(char *name)
+{
+if (name == "VB"){
+return 0;
+}
+else if (name == "HOB")
+{
+return 1;
+}
+else if (name == "SDR")
+{
+return 2;
+}
+else if (name == "AaB")
+{
+return 3;
+}
+else if (name == "FCM")
+{
+return 4;
+}
+else if (name == "AGF")
+{
+return 5;
+}
+else if (name == "FCN")
+{
+return 6;
+}
+else if (name == "EFB")
+{
+return 7;
+}
+else if (name == "VEN")
+{
+return 8;
+}
+else if (name == "OB")
+{
+return 9;
+}
+else if (name == "FCK")
+{
+return 10;
+}
+else if (name == "ACH")
+{
+return 11;
+}
+else if (name == "RFC")
+{
+return 12;
+}
+else if (name == "BIF")
+{
+return 13;
+}
+}
