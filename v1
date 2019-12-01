@@ -1,17 +1,18 @@
 #include <stdio.h>
+#include <string.h>
 #define MAX_LENGTH 6
 #define TOTAL_GAMES 182
 #define NUMBER_OF_TEAMS 14
 
 typedef struct 
 {
-    char *weekday[MAX_LENGTH];
-    int *date[MAX_LENGTH];
-    int *month[MAX_LENGTH];
-    int *time_hour[MAX_LENGTH];
-    int *time_minutes[MAX_LENGTH];
-    char *team1[MAX_LENGTH];
-    char *team2[MAX_LENGTH];
+    char weekday[MAX_LENGTH];
+    int date;
+    int month;
+    int time_hour;
+    int time_minutes;
+    char team1[MAX_LENGTH];
+    char team2[MAX_LENGTH];
     int result1;
     int result2;
     int viewers; 
@@ -19,22 +20,29 @@ typedef struct
 
 typedef struct
 {
-    char* team_name[MAX_LENGTH];
+    char team_name[MAX_LENGTH];
     int goals_scored_of_team;
     int goals_scored_against_team;
-} team;
+    int total_score;
+} hold;
 
+/* prototypes */
 int h(char *name);
+int are_strings_equal(char *str1, char *str2);
+int cmpfunc (const void * a, const void * b);
 
 int main(void)
 {    
- int scanres = 0;
- int index = 0;
-kampe game[TOTAL_GAMES];
-team team[NUMBER_OF_TEAMS];
-
+  
 int i = 0;
+int j = 0;
+int k = 0;
+int scanres = 0;
+int index = 0;
+kampe game[TOTAL_GAMES];
+hold team[NUMBER_OF_TEAMS];
 
+/* OPEN AND SCANF FILE */
  FILE *input;
 input = fopen("kampe.txt", "r");
 if (input != NULL)
@@ -44,8 +52,10 @@ if (input != NULL)
         scanres = fscanf(input, " %s %d/%d %d.%d %s - %s %d - %d %d",
         game[i].weekday, &game[i].date, &game[i].month, &game[i].time_hour, &game[i].time_minutes, game[i].team1, game[i].team2, &game[i].result1, &game[i].result2, &game[i].viewers);
     
-        printf("%s %d/%d %d.%d %s - %s %d - %d %d \n", 
+    /* OUT COMMENT TO PRINT FILE
+        printf("%s %d/%d %d.%.2d %s - %s %d - %d %d \n", 
         game[i].weekday, game[i].date, game[i].month, game[i].time_hour, game[i].time_minutes, game[i].team1, game[i].team2, game[i].result1, game[i].result2, game[i].viewers);
+    */  
       }
   }
 else
@@ -53,73 +63,118 @@ else
     printf("failed!");
   }
 
-/*
-for (i = 0; i < NUMBER_OF_TEAMS; i++)
+/* CALCULATING EACH OF THE TEAMS SCORES - ADD TO FUNCTION LATER */
+for (j = 0; j < TOTAL_GAMES; j++)
   {
-    index = h(game[i].team1); /* HVOR SKAL INTEN ENDE HENNE?
-    
-    printf("index: %d\n");
+    /*
+    team[h(game[j].team1)].team_name = game[j].team1; 
+    team[h(game[j].team2)].team_name = game[j].team2; 
+    */
+
+    team[h(game[j].team1)].goals_scored_of_team += game[j].result1;     
+    team[h(game[j].team1)].goals_scored_against_team += game[j].result2; 
+
+    team[h(game[j].team2)].goals_scored_of_team += game[j].result2;     
+    team[h(game[j].team2)].goals_scored_against_team += game[j].result1; 
+
+
+      if (game[j].result1 > game[j].result2)
+      {
+        team[h(game[j].team1)].total_score += 3;
+      }
+     else if (game[j].result1 < game[j].result2)
+     {
+        team[h(game[j].team2)].total_score += 3;
+     }
+      else if (game[j].result1 == game[j].result2)
+      {
+      team[h(game[j].team1)].total_score += 1;
+      team[h(game[j].team2)].total_score += 1;
+      }
   }
+
+/*
+qsort(team, NUMBER_OF_TEAMS, sizeof(team),cmpfunc);
 */
+
+for (k = 0; k < NUMBER_OF_TEAMS; k++)
+{
+  printf(" NAME: %s \t POINTS: %d \t GOALS OF TEAM: %d \t GOALS AGAINST TEAM: %d \n", team[k].team_name, team[k].total_score, team[k].goals_scored_of_team, team[k].goals_scored_against_team  );
+}
+
+
+
 return 0;
 }
 
 
 int h(char *name)
 {
-if (name == "VB"){
-return 0;
+  if (are_strings_equal(name,"VB"))
+  {
+    return 0;
+  }
+  else if (are_strings_equal(name,"HOB"))
+  {
+    return 1;
+  }
+  else if (are_strings_equal(name,"SDR"))
+  {
+    return 2;
+  }
+  else if (are_strings_equal(name,"AaB"))
+  {
+    return 3;
+  }
+  else if (are_strings_equal(name,"FCM"))  
+  {
+    return 4;
+  }
+  else if (are_strings_equal(name,"AGF"))
+  {
+    return 5;
+  }
+  else if (are_strings_equal(name,"FCN"))
+  {
+    return 6;
+  }
+  else if (are_strings_equal(name,"EFB"))
+  {
+    return 7;
+  }
+  else if (are_strings_equal(name,"VEN"))
+  {
+    return 8;
+  }
+  else if (are_strings_equal(name,"OB"))
+  {
+    return 9;
+  }
+  else if (are_strings_equal(name,"FCK"))
+  {
+    return 10;
+  }
+    else if (are_strings_equal(name,"ACH"))
+  {
+    return 11;
+  }
+    else if (are_strings_equal(name,"RFC"))
+  {
+    return 12;
+  }
+    else if (are_strings_equal(name,"BIF"))
+  {
+    return 13;
+  }
 }
-else if (name == "HOB")
+
+/* Fra kurts video */
+int are_strings_equal(char *str1, char *str2)
 {
-return 1;
+return strcmp (str1, str2) == 0;
 }
-else if (name == "SDR")
+
+int cmpfunc (const void * a, const void * b) 
 {
-return 2;
-}
-else if (name == "AaB")
-{
-return 3;
-}
-else if (name == "FCM")
-{
-return 4;
-}
-else if (name == "AGF")
-{
-return 5;
-}
-else if (name == "FCN")
-{
-return 6;
-}
-else if (name == "EFB")
-{
-return 7;
-}
-else if (name == "VEN")
-{
-return 8;
-}
-else if (name == "OB")
-{
-return 9;
-}
-else if (name == "FCK")
-{
-return 10;
-}
-else if (name == "ACH")
-{
-return 11;
-}
-else if (name == "RFC")
-{
-return 12;
-}
-else if (name == "BIF")
-{
-return 13;
-}
+   return ( *(int*)a - *(int*)b );
 }
